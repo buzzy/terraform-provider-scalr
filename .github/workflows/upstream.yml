@@ -36,14 +36,14 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: "1.17"
-      - name: Create container
-        id: create
-        uses: Scalr/gh-action-revizor@master
-        with:
-          command: create
+#      - name: Create container
+#        id: create
+#        uses: Scalr/gh-action-revizor@master
+#        with:
+#          command: create
       - name: Run acceptance tests
         env:
-          SCALR_HOSTNAME: ${{ steps.create.outputs.hostname }}
+          SCALR_HOSTNAME: https://org11.te.scalr-labs.net
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TEST_AWS_ACCESS_KEY: ${{ secrets.TEST_AWS_ACCESS_KEY }}
           TEST_AWS_SECRET_KEY: ${{ secrets.TEST_AWS_SECRET_KEY }}
@@ -54,13 +54,13 @@ jobs:
           TEST_ARM_TENANT_ID: ${{ secrets.TEST_ARM_TENANT_ID }}
           TEST_ARM_SUBSCRIPTION_ID: ${{ secrets.TEST_ARM_SUBSCRIPTION_ID }}
         run: make testacc
-      - name: Delete container
-        id: delete
-        if: ${{ always() && steps.create.outputs.container_id }}
-        uses: Scalr/gh-action-revizor@master
-        with:
-          command: delete
-          container_id: ${{ steps.create.outputs.container_id }}
+#      - name: Delete container
+#        id: delete
+#        if: ${{ always() && steps.create.outputs.container_id }}
+#        uses: Scalr/gh-action-revizor@master
+#        with:
+#          command: delete
+#          container_id: ${{ steps.create.outputs.container_id }}
       - name: Notify upstream about success
         if: ${{ success() }}
         run: make notify-upstream upstream_sha=${{ github.event.inputs.upstream-sha }} state=success run_id=${{ github.run_id }}
